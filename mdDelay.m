@@ -51,8 +51,8 @@ threshold = 1/exp(1);
 %
 
 % Allocate a matrix, where each column will be the auto mutual information
-% as a function of time lag for a variable in the input data.
-auto_mi = zeros(maxlag, ncol);
+% as a function of time lag [0; maxlag] for a variable in the input data.
+auto_mi = zeros(maxlag + 1, ncol);
 
 % Allocate a vector to hold the estimated optimal time lag for each
 % dimension.
@@ -99,8 +99,16 @@ end
 
 function plotMeanMI(mi)
     [nlag, ncol] = size(mi);
+    maxlag = nlag - 1;
+    averageMI = mean(mi, 2); % Row mean
+    plot(0:maxlag, averageMI, 'b');
+end
+
+function plotAllMI(mi)
+    [nlag, ncol] = size(mi);
+    maxlag = nlag - 1;
     for c = 1:ncol
-        plot(0:nlag, mi(:,c), 'b');
+        plot(0:maxlag, mi(:,c), 'b');
     end
 end
 
