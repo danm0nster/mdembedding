@@ -1,11 +1,14 @@
 function delay = mdDelay(data, varargin)
 %MDDELAY Estimates time delay for embedding of multivariate times series.
-%   The function calculates the value of the time delay for which the auto
-%   mutual information for each of the variables (columns) is less than
-%   1/e, and returns the mean value of these as the estimate of the optimal
-%   time delay. This is the uniform multivariate embedding method.
+%   The function plots the mutual information for multivariate times series
+%   data, so the user can estimate the optimal value of the time delay for
+%   embedding the data. The function also returns an estimate of the
+%   optimal time delay, using simple methods, such as the mean of the lag
+%   for which the auto mutual information for each of the variables
+%   (columns) is less than 1/e. A single value. This is the uniform
+%   multivariate embedding method.
 %
-%   Other methods will be added in a later version.
+%   Other methods may be added in a later version.
 %
 %   1 Brief description 2 Full-syntax call 3 Input &
 %   output explanations
@@ -30,7 +33,7 @@ par = inputParser;
 
 % Optional p
 defaultPlot = 'mean';
-validPlots = {'mean','all'};
+validPlots = {'mean', 'all', 'none'};
 checkPlot = @(x) any(validatestring(x,validPlots));
 
 addOptional(par,'plot',defaultPlot,checkPlot)
@@ -42,17 +45,28 @@ nbins = 10;
 maxlag = 10;
 threshold = 1/exp(1);
 [~, ncol] = size(data);
-% Allocate a vector to hold the optimal time lag for each dimension.
+
+%
+% Calculation of the mutual information as a function of time lag
+%
+
+% Allocate a matrix, where each column will be the auto mutual information
+% as a function of time lag for a variable in the input data.
+auto_mi = zeros(maxlag, ncol);
+
+% Allocate a vector to hold the estimated optimal time lag for each
+% dimension.
 lags = zeros(1,ncol);
+
 for c=1:ncol
     info = mi(data(:,c), nbins, maxlag, 'silent');
     % For each lag there is a 2x2 matrix with identical elements, since it
     % is the AUTO mutual information. We onlt need one of these, e.g.,
     % (1,1), and the result is squeezed to get rid of the extra dimensions.
-    auto_mi = squeeze(info(1,1,:));
-    plot(0:maxlag, auto_mi,'b');
+    auto_mi(:,c) = squeeze(info(1,1,:));
     lags(c) = findFirstBelowThreshold(auto_mi, threshold);
 end
+plotMeanMI(auto_mi);
 delay = mean(lags);
 end
 
@@ -78,7 +92,16 @@ function lag = findFirstBelowThreshold(ami, threshold)
         % the min() function returns the first one.
         [~, idx] = min(ami);
     end
-        lag = idx - 1; % idx = 1 is lag = 0        
+        % A value of the index idx = 1 corresponds to lag = 0, so 1 is
+        % subtracted from the index to get the lag.
+        lag = idx - 1;       
+end
+
+function plotMeanMI(mi)
+    [nlag, ncol] = size(mi);
+    for c = 1:ncol
+        plot(0:nlag, mi(:,c), 'b');
+    end
 end
 
 % TODO: Write local function to calculate multual information
