@@ -1,4 +1,4 @@
-function delay = mdDelay(data)
+function delay = mdDelay(data, varargin)
 %MDDELAY Estimates time delay for embedding of multivariate times series.
 %   The function calculates the value of the time delay for which the auto
 %   mutual information for each of the variables (columns) is less than
@@ -27,6 +27,13 @@ function delay = mdDelay(data)
 % Parse and validate the input
 %
 par = inputParser;
+
+% Optional p
+defaultPlot = 'mean';
+validPlots = {'mean','all'};
+checkPlot = @(x) any(validatestring(x,validPlots));
+
+addOptional(par,'plot',defaultPlot,checkPlot)
 addRequired(par,'data', @checkdata);
    parse(par,data);
 
@@ -36,14 +43,15 @@ maxlag = 10;
 threshold = 1/exp(1);
 [~, ncol] = size(data);
 % Allocate a vector to hold the optimal time lag for each dimension.
-lags = zeros(ncol);
+lags = zeros(1,ncol);
 for c=1:ncol
     info = mi(data(:,c), nbins, maxlag, 'silent');
     % For each lag there is a 2x2 matrix with identical elements, since it
     % is the AUTO mutual information. We onlt need one of these, e.g.,
     % (1,1), and the result is squeezed to get rid of the extra dimensions.
     auto_mi = squeeze(info(1,1,:));
-    lags(c) = find(auto_mi < threshold, 1, 'first');
+    plot(0:maxlag, auto_mi,'b');
+    lags(c) = findFirstBelowThreshold(auto_mi, threshold);
 end
 delay = mean(lags);
 end
@@ -58,3 +66,19 @@ function check = checkdata(x)
        check = true;
    end
 end
+
+function lag = findFirstBelowThreshold(ami, threshold)
+    % First find the first element below the threshold. Then test whether
+    % an element below the threshold was found, and recover if this is not
+    % the case.
+    idx = find(ami < threshold, 1, 'first');
+    if isempty(idx)
+        disp("No value below threshold found. Will use minium instead");
+        % If there is more than one elemtent that has the minimum value
+        % the min() function returns the first one.
+        [~, idx] = min(ami);
+    end
+        lag = idx - 1; % idx = 1 is lag = 0        
+end
+
+% TODO: Write local function to calculate multual information
