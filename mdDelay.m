@@ -31,13 +31,13 @@ function delay = mdDelay(data, varargin)
 %
 par = inputParser;
 
-% Optional p
-defaultPlot = 'mean';
-validPlots = {'mean', 'all', 'none'};
-checkPlot = @(x) any(validatestring(x,validPlots));
+% Optional parameter: plottype
+defaultPlotType = 'mean';
+validPlotTypes = {'mean', 'all', 'none'};
+checkPlotType = @(x) any(validatestring(x,validPlotTypes));
 
-addOptional(par,'plot',defaultPlot,checkPlot)
 addRequired(par,'data', @checkdata);
+addParameter(par,'plottype', defaultPlotType, checkPlotType)
    parse(par,data);
 
 % TODO: These constants should be made parameters of the function.
@@ -56,17 +56,31 @@ auto_mi = zeros(maxlag + 1, ncol);
 
 % Allocate a vector to hold the estimated optimal time lag for each
 % dimension.
-lags = zeros(1,ncol);
+lags = zeros(1, ncol);
 
 for c=1:ncol
-    info = mi(data(:,c), nbins, maxlag, 'silent');
+    info = mi(data(:, c), nbins, maxlag, 'silent');
     % For each lag there is a 2x2 matrix with identical elements, since it
     % is the AUTO mutual information. We onlt need one of these, e.g.,
     % (1,1), and the result is squeezed to get rid of the extra dimensions.
-    auto_mi(:,c) = squeeze(info(1,1,:));
+    auto_mi(:,c) = squeeze(info(1, 1, :));
     lags(c) = findFirstBelowThreshold(auto_mi, threshold);
 end
-plotMeanMI(auto_mi);
+
+%
+% Call the relevant plotting function
+%
+disp(['Plot type: ', par.Results.plottype])
+switch par.Results.plottype
+    case 'mean'
+        plotMeanMI(auto_mi, threshold);
+    case 'all'
+        plotAllMI(auto_mi, threshold);
+    case 'none'
+end
+%
+% Return the estimated optimal time lag
+%
 delay = mean(lags);
 end
 
@@ -97,19 +111,38 @@ function lag = findFirstBelowThreshold(ami, threshold)
         lag = idx - 1;       
 end
 
-function plotMeanMI(mi)
+function plotMeanMI(mi, threshold)
     [nlag, ncol] = size(mi);
     maxlag = nlag - 1;
-    averageMI = mean(mi, 2); % Row mean
-    plot(0:maxlag, averageMI, 'b');
+    % Compute a vector with the mean of each row.
+    aveMI = mean(mi, 2);
+    x = (0:maxlag)';
+    y = aveMI;
+    figure();
+    hold off
+    % Vector with standard deviation of each row
+    stddev = std(mi, 0, 2);  
+    if ~max(stddev) == 0
+        yu = y + stddev;
+        yl = y - stddev;
+        fill([x fliplr(x)], [yu fliplr(yl)], [.9 .9 .9], 'linestyle', 'none')
+        hold all
+    end
+    plot(x, y, 'b')
+    hold on
+    refline(0, threshold)
 end
 
-function plotAllMI(mi)
+function plotAllMI(mi, threshold)
     [nlag, ncol] = size(mi);
     maxlag = nlag - 1;
+    figure();
+    hold off
     for c = 1:ncol
-        plot(0:maxlag, mi(:,c), 'b');
+        plot(0:maxlag, mi(:, c), 'b');
+        hold on
     end
+    refline(0, threshold)
 end
 
 % TODO: Write local function to calculate multual information
