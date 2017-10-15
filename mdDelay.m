@@ -29,16 +29,16 @@ function delay = mdDelay(data, varargin)
 %
 % Parse and validate the input
 %
-par = inputParser;
+parser = inputParser;
 
 % Optional parameter: plottype
 defaultPlotType = 'mean';
 validPlotTypes = {'mean', 'all', 'none'};
-checkPlotType = @(x) any(validatestring(x,validPlotTypes));
+checkPlotType = @(x) any(validatestring(string(x), validPlotTypes));
 
-addRequired(par,'data', @checkdata);
-addParameter(par,'plottype', defaultPlotType, checkPlotType)
-   parse(par,data);
+addRequired(parser, 'data', @checkdata);
+addOptional(parser, 'plottype', defaultPlotType, checkPlotType)
+parse(parser, data, varargin);
 
 % TODO: These constants should be made parameters of the function.
 nbins = 10;
@@ -70,8 +70,9 @@ end
 %
 % Call the relevant plotting function
 %
-disp(['Plot type: ', par.Results.plottype])
-switch par.Results.plottype
+disp(['Plot type: ', parser.Results.plottype])
+plotType = string(parser.Results.plottype);
+switch plotType
     case 'mean'
         plotMeanMI(auto_mi, threshold);
     case 'all'
