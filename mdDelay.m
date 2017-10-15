@@ -34,11 +34,11 @@ parser = inputParser;
 % Optional parameter: plottype
 defaultPlotType = 'mean';
 validPlotTypes = {'mean', 'all', 'none'};
-checkPlotType = @(x) any(validatestring(string(x), validPlotTypes));
+checkPlotType = @(x) any(validatestring(x, validPlotTypes));
 
 addRequired(parser, 'data', @checkdata);
 addOptional(parser, 'plottype', defaultPlotType, checkPlotType)
-parse(parser, data, varargin);
+parse(parser, data, varargin{:});
 
 % TODO: These constants should be made parameters of the function.
 nbins = 10;
