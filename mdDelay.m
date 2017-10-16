@@ -75,6 +75,7 @@ plotType = string(parser.Results.plottype);
 switch plotType
     case 'mean'
         plotMeanMI(auto_mi, threshold);
+        plotAllMI(auto_mi, threshold);
     case 'all'
         plotAllMI(auto_mi, threshold);
     case 'none'
@@ -112,35 +113,37 @@ function lag = findFirstBelowThreshold(ami, threshold)
         lag = idx - 1;       
 end
 
-function plotMeanMI(mi, threshold)
-    [nlag, ncol] = size(mi);
+function plotMeanMI(ami, threshold)
+    [nlag, ncol] = size(ami);
     maxlag = nlag - 1;
     % Compute a vector with the mean of each row.
-    aveMI = mean(mi, 2);
+    y = mean(ami, 2);
+    % Vector with standard deviation of each row.
+    stddev = std(ami, 0, 2);  
+    % Construct a vector with lags for x-axis.
     x = (0:maxlag)';
-    y = aveMI;
     figure();
     hold off
-    % Vector with standard deviation of each row
-    stddev = std(mi, 0, 2);  
+    % Plot shaded area indicating standard deviation if it is non-zero.
     if ~max(stddev) == 0
         yu = y + stddev;
         yl = y - stddev;
-        fill([x fliplr(x)], [yu fliplr(yl)], [.9 .9 .9], 'linestyle', 'none')
-        hold all
+        % To make this work the vectors need to be transposed (fliplr) to
+        % become row vectors.
+        fill([x' fliplr(x')], [yu' fliplr(yl')], [.9 .9 .9], 'linestyle', 'none')
+        hold on
     end
     plot(x, y, 'b')
-    hold on
     refline(0, threshold)
 end
 
-function plotAllMI(mi, threshold)
-    [nlag, ncol] = size(mi);
+function plotAllMI(ami, threshold)
+    [nlag, ncol] = size(ami);
     maxlag = nlag - 1;
     figure();
     hold off
     for c = 1:ncol
-        plot(0:maxlag, mi(:, c), 'b');
+        plot(0:maxlag, ami(:, c), 'b');
         hold on
     end
     refline(0, threshold)
