@@ -148,5 +148,3 @@ function plotAllMI(ami, threshold)
     end
     refline(0, threshold)
 end
-
-% TODO: Write local function to calculate multual information
