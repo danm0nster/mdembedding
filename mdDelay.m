@@ -5,8 +5,9 @@ function delay = mdDelay(data, varargin)
 %   embedding the data. The function also returns an estimate of the
 %   optimal time delay, using simple methods, such as the mean of the lag
 %   for which the auto mutual information for each of the variables
-%   (columns) is less than a threshold, such as 1/e. A single value. This is the uniform
-%   multivariate embedding method.
+%   (columns) is less than a threshold, such as 1/e.
+%
+%   This is the uniform multivariate embedding method.
 %
 %   Other methods may be added in a later version.
 %
@@ -81,7 +82,7 @@ for c=1:ncol
     % is the AUTO mutual information. We onlt need one of these, e.g.,
     % (1,1), and the result is squeezed to get rid of the extra dimensions.
     auto_mi(:,c) = squeeze(info(1, 1, :));
-    lags(c) = findFirstBelowThreshold(auto_mi, threshold);
+    lags(c) = findFirstBelowThreshold(auto_mi(:,c), threshold);
 end
 
 %
@@ -160,7 +161,7 @@ function plotMeanMI(ami, threshold)
     if ~max(stddev) == 0
         yu = y + stddev;
         yl = y - stddev;
-        % To make this work the vectors need to be transposed (fliplr) to
+        % To make this work the vectors need to be transposed to
         % become row vectors.
         fill([x' fliplr(x')], [yu' fliplr(yl')], [.9 .9 .9], 'linestyle', 'none')
         hold on
