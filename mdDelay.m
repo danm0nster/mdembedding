@@ -36,13 +36,25 @@ defaultPlotType = 'mean';
 validPlotTypes = {'mean', 'all', 'none'};
 checkPlotType = @(x) any(validatestring(x, validPlotTypes));
 
+% Optional parameter: numBins
+defaultNumBins = 10;
+checkNumBins = @(x) validateattributes(x, {'numeric'}, {'positive'});
+
+% Optional parameter: maxLag
+defaultmaxLag = 10;
+checkmaxLag = @(x) validateattributes(x, {'numeric'}, {'positive'});
+
 addRequired(parser, 'data', @checkdata);
-addOptional(parser, 'plottype', defaultPlotType, checkPlotType)
+addOptional(parser, 'plottype', defaultPlotType, checkPlotType);
+addOptional(parser, 'numBins', defaultNumBins, checkNumBins);
+addOptional(parser, 'maxLag', defaultNumBins, checkmaxLag);
 parse(parser, data, varargin{:});
 
+% Get the optional 
+numBins = parser.Results.numBins;
+maxLag = parser.Results.maxLag;
+
 % TODO: These constants should be made parameters of the function.
-nbins = 10;
-maxlag = 10;
 threshold = 1/exp(1);
 [~, ncol] = size(data);
 
@@ -52,14 +64,14 @@ threshold = 1/exp(1);
 
 % Allocate a matrix, where each column will be the auto mutual information
 % as a function of time lag [0; maxlag] for a variable in the input data.
-auto_mi = zeros(maxlag + 1, ncol);
+auto_mi = zeros(maxLag + 1, ncol);
 
 % Allocate a vector to hold the estimated optimal time lag for each
 % dimension.
 lags = zeros(1, ncol);
 
 for c=1:ncol
-    info = mi(data(:, c), nbins, maxlag, 'silent');
+    info = mi(data(:, c), numBins, maxLag, 'silent');
     % For each lag there is a 2x2 matrix with identical elements, since it
     % is the AUTO mutual information. We onlt need one of these, e.g.,
     % (1,1), and the result is squeezed to get rid of the extra dimensions.
@@ -103,7 +115,7 @@ function lag = findFirstBelowThreshold(ami, threshold)
     % the case.
     idx = find(ami < threshold, 1, 'first');
     if isempty(idx)
-        disp("No value below threshold found. Will use minium instead");
+        disp("No value below threshold found. Will use minimum instead");
         % If there is more than one elemtent that has the minimum value
         % the min() function returns the first one.
         [~, idx] = min(ami);
