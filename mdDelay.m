@@ -5,7 +5,7 @@ function delay = mdDelay(data, varargin)
 %   embedding the data. The function also returns an estimate of the
 %   optimal time delay, using simple methods, such as the mean of the lag
 %   for which the auto mutual information for each of the variables
-%   (columns) is less than 1/e. A single value. This is the uniform
+%   (columns) is less than a threshold, such as 1/e. A single value. This is the uniform
 %   multivariate embedding method.
 %
 %   Other methods may be added in a later version.
@@ -33,29 +33,34 @@ parser = inputParser;
 
 % Optional parameter: plottype
 defaultPlotType = 'mean';
-validPlotTypes = {'mean', 'all', 'none'};
+validPlotTypes = {'mean', 'all', 'both', 'none'};
 checkPlotType = @(x) any(validatestring(x, validPlotTypes));
 
 % Optional parameter: numBins
 defaultNumBins = 10;
-checkNumBins = @(x) validateattributes(x, {'numeric'}, {'positive'});
+checkNumBins = @(x) validateattributes(x, {'numeric'}, {'positive', 'numel', 1});
 
 % Optional parameter: maxLag
-defaultmaxLag = 10;
-checkmaxLag = @(x) validateattributes(x, {'numeric'}, {'positive'});
+defaultMaxLag = 10;
+checkMaxLag = @(x) validateattributes(x, {'numeric'}, {'positive', 'numel', 1});
+
+% Optional parameter: threshold
+defaultThreshold = exp(-1);
+% checkThreshold = @(x) validateattributes(x, {'numeric'}, {'positive'});
 
 addRequired(parser, 'data', @checkdata);
 addOptional(parser, 'plottype', defaultPlotType, checkPlotType);
 addOptional(parser, 'numBins', defaultNumBins, checkNumBins);
-addOptional(parser, 'maxLag', defaultNumBins, checkmaxLag);
+addOptional(parser, 'maxLag', defaultMaxLag, checkMaxLag);
+addOptional(parser, 'threshold', defaultThreshold, @checkThreshold);
 parse(parser, data, varargin{:});
 
-% Get the optional 
+% Get the optional arguments if provided. Otherwise the specified defaults
+% are used.
 numBins = parser.Results.numBins;
 maxLag = parser.Results.maxLag;
+threshold = parser.Results.threshold;
 
-% TODO: These constants should be made parameters of the function.
-threshold = 1/exp(1);
 [~, ncol] = size(data);
 
 %
@@ -87,8 +92,10 @@ plotType = string(parser.Results.plottype);
 switch plotType
     case 'mean'
         plotMeanMI(auto_mi, threshold);
-        plotAllMI(auto_mi, threshold);
     case 'all'
+        plotAllMI(auto_mi, threshold);
+    case 'both'
+        plotMeanMI(auto_mi, threshold);
         plotAllMI(auto_mi, threshold);
     case 'none'
 end
@@ -104,6 +111,19 @@ function check = checkdata(x)
        error('Input is not numeric');
    elseif (numel(x) <= 1)
        error('Input must be a vector or matrix');
+   else
+       check = true;
+   end
+end
+
+function check = checkThreshold(x)
+   check = false;
+   if (~isnumeric(x))
+       error('The parameter threshold must be numeric');
+   elseif (numel(x) ~= 1)
+       error('The parameter threshold must be a scalar');
+   elseif (x < 0)
+       error('threshold must be a positive number');
    else
        check = true;
    end
@@ -147,6 +167,8 @@ function plotMeanMI(ami, threshold)
     end
     plot(x, y, 'b')
     refline(0, threshold)
+    limits = ylim;
+    ylim([0, limits(2)]);
 end
 
 function plotAllMI(ami, threshold)
@@ -159,4 +181,6 @@ function plotAllMI(ami, threshold)
         hold on
     end
     refline(0, threshold)
+    limits = ylim;
+    ylim([0, limits(2)]);
 end
