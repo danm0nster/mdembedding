@@ -77,11 +77,7 @@ auto_mi = zeros(maxLag + 1, ncol);
 lags = zeros(1, ncol);
 
 for c=1:ncol
-    info = mi(data(:, c), numBins, maxLag, 'silent');
-    % For each lag there is a 2x2 matrix with identical elements, since it
-    % is the AUTO mutual information. We onlt need one of these, e.g.,
-    % (1,1), and the result is squeezed to get rid of the extra dimensions.
-    auto_mi(:,c) = squeeze(info(1, 1, :));
+    auto_mi(:,c) = autoMI(data(:, c), numBins, maxLag);
     lags(c) = findFirstBelowThreshold(auto_mi(:,c), threshold);
 end
 
@@ -170,6 +166,8 @@ function plotMeanMI(ami, threshold)
     refline(0, threshold)
     limits = ylim;
     ylim([0, limits(2)]);
+    xlabel('Time lag')
+    ylabel('Mutual Information')
 end
 
 function plotAllMI(ami, threshold)
@@ -184,4 +182,6 @@ function plotAllMI(ami, threshold)
     refline(0, threshold)
     limits = ylim;
     ylim([0, limits(2)]);
+    xlabel('Time lag')
+    ylabel('Mutual Information')
 end
