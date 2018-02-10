@@ -85,7 +85,7 @@ end
 % Call the relevant plotting function
 %
 disp(['Plot type: ', parser.Results.plottype])
-plotType = string(parser.Results.plottype);
+plotType = char(parser.Results.plottype);
 switch plotType
     case 'mean'
         plotMeanMI(auto_mi, threshold);
@@ -132,7 +132,7 @@ function lag = findFirstBelowThreshold(ami, threshold)
     % the case.
     idx = find(ami < threshold, 1, 'first');
     if isempty(idx)
-        disp("No value below threshold found. Will use minimum instead");
+        disp('No value below threshold found. Will use minimum instead');
         % If there is more than one elemtent that has the minimum value
         % the min() function returns the first one.
         [~, idx] = min(ami);
@@ -141,6 +141,8 @@ function lag = findFirstBelowThreshold(ami, threshold)
         % subtracted from the index to get the lag.
         lag = idx - 1;       
 end
+
+% TODO: Add function findFirstLocalMinimum(ami)
 
 function plotMeanMI(ami, threshold)
     [nlag, ncol] = size(ami);
