@@ -91,6 +91,7 @@ numBins = parser.Results.numBins;
 maxLag = parser.Results.maxLag;
 criterion = char(parser.Results.criterion);
 threshold = parser.Results.threshold;
+plotType = char(parser.Results.plottype);
 
 [~, ncol] = size(data);
 
@@ -118,8 +119,6 @@ end
 %
 % Call the relevant plotting function
 %
-disp(['Plot type: ', parser.Results.plottype])
-plotType = char(parser.Results.plottype);
 switch plotType
     case 'mean'
         plotMeanMI(auto_mi, threshold);
@@ -153,7 +152,7 @@ function lag = findFirstBelowThreshold(ami, threshold)
     % the case.
     idx = find(ami < threshold, 1, 'first');
     if isempty(idx)
-        disp('No value below threshold found. Will use local minimum instead');
+        disp('No value below threshold found. Will use first local minimum instead');
         % If there is more than one elemtent that has the minimum value
         % the min() function returns the first one.
         lag = findFirstLocalMinimum(ami);
@@ -171,7 +170,8 @@ function lag = findFirstLocalMinimum(ami)
         % Select the first local minimum
         idx = idx(1);
     else
-        disp('No local minimium found. Will use minimum instead');
+        disp('No local minimium found. Will use global minimum instead');
+        disp('Consider increasing maxLag');
         % If there is more than one elemtent that has the minimum value
         % the min() function returns the first one.
         [~, idx] = min(ami);
