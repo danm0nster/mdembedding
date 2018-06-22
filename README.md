@@ -42,7 +42,7 @@ tau = mdDelay(data, 'maxLag', 25, 'plottype', 'mean');
 ### Estimating the embedding dimension
 The optimal embedding dimension is estimated using the method of false nearest neighbors (FNN), which is implemented in the function `mdFnn()`. We call this function with the value of `tau` found above rounded to nearest integer (in this case 15). The function returns a vector with the percent of FNN and another vector with the corresponding embedding dimensions.
 ```MATLAB
-[fnnPercent, embeddingDimension] = mdFnn(data, round(tau), 10, 1);
+[fnnPercent, embeddingDimension] = mdFnn(data, round(tau));
 ```
 ![Figure 2b from paper](examples/Lorenz/Figure2b.png)
 
