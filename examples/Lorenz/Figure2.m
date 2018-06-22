@@ -5,6 +5,11 @@
 %
 
 %
+% Load the data
+%
+data = load('lorenz_3d_timeseries.txt');
+
+%
 % Set the font size for plots
 %
 fontSize = 18;
@@ -13,7 +18,6 @@ fontSize = 18;
 % Time delay and plot using all variables
 %
 figure()
-data = load('lorenz_3d_timeseries.txt');
 tau = mdDelay(data, 'maxLag', 25, 'plottype', 'all');
 set(gca,'FontSize',fontSize,'fontWeight','normal')
 set(findall(gcf,'type','text'),'FontSize',fontSize,'fontWeight','normal')
@@ -26,6 +30,15 @@ print('Figure2a','-dpng')
 figure()
 [fnnPercent, embeddingDimension] = mdFnn(data, round(tau));
 print('Figure2b','-dpng')
+
+%
+% Alternative method to find time delay using first local minimum criterion
+%
+figure()
+tau = mdDelay(data, 'maxLag', 25, 'plottype', 'all', 'criterion', 'localMin');
+set(gca,'FontSize',fontSize,'fontWeight','normal')
+set(findall(gcf,'type','text'),'FontSize',fontSize,'fontWeight','normal')
+disp('xyz: tau = ' + string(tau))
 
 %
 % Time delay and plot only the x-variable

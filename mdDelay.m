@@ -16,10 +16,21 @@ function delay = mdDelay(data, varargin)
 %
 %   Optional arguments:
 %     maxLag: The maximum time lag for which AMI is computed. Default = 10.
+%
 %     numBins: The number of bins used to construct the histograms for
 %       computing AMI. Default = 10.
+%
+%     criterion: The citerion used for finding the optimal delay. Possible
+%     values are:
+%       'firstBelow' to use the lowest delay at which the AMI
+%         function drops below the value set by the threshold parameter.
+%       'localMin' to use the position of the first local minimum of the
+%         AMI function.
+%       Default: 'firstBelow'
+%
 %     threshold: The threshold value to select the delay when AMI drops
 %       below threshold. Default = exp(-1)
+%
 %     plottype: Determines how the AMI is plotted. Possible values are
 %     'mean', 'all', 'both', 'none'. Default = 'mean'
 %
@@ -57,6 +68,11 @@ checkNumBins = @(x) validateattributes(x, {'numeric'}, {'positive', 'numel', 1})
 defaultMaxLag = 10;
 checkMaxLag = @(x) validateattributes(x, {'numeric'}, {'positive', 'numel', 1});
 
+% Optional parameter: criterion
+defaultCriterion = 'firstBelow';
+validCriteria = {'firstBelow', 'localMin'};
+checkCriterion = @(x) any(validatestring(x, validCriteria));
+
 % Optional parameter: threshold
 defaultThreshold = exp(-1);
 checkThreshold = @(x) validateattributes(x, {'numeric'}, {'positive'});
@@ -65,6 +81,7 @@ addRequired(parser, 'data', @checkdata);
 addOptional(parser, 'plottype', defaultPlotType, checkPlotType);
 addOptional(parser, 'numBins', defaultNumBins, checkNumBins);
 addOptional(parser, 'maxLag', defaultMaxLag, checkMaxLag);
+addOptional(parser, 'criterion', defaultCriterion, checkCriterion);
 addOptional(parser, 'threshold', defaultThreshold, checkThreshold);
 parse(parser, data, varargin{:});
 
@@ -72,6 +89,7 @@ parse(parser, data, varargin{:});
 % are used.
 numBins = parser.Results.numBins;
 maxLag = parser.Results.maxLag;
+criterion = char(parser.Results.criterion);
 threshold = parser.Results.threshold;
 
 [~, ncol] = size(data);
@@ -90,7 +108,11 @@ lags = zeros(1, ncol);
 
 for c=1:ncol
     auto_mi(:,c) = autoMI(data(:, c), numBins, maxLag);
-    lags(c) = findFirstBelowThreshold(auto_mi(:,c), threshold);
+    if strcmp(criterion, 'firstBelow')
+        lags(c) = findFirstBelowThreshold(auto_mi(:, c), threshold);
+    elseif strcmp(criterion, 'localMin')
+        lags(c) = findFirstLocalMinimum(auto_mi(:, c));
+    end
 end
 
 %
@@ -125,39 +147,42 @@ function check = checkdata(x)
    end
 end
 
-function check = checkThreshold(x)
-   check = false;
-   if (~isnumeric(x))
-       error('The parameter threshold must be numeric');
-   elseif (numel(x) ~= 1)
-       error('The parameter threshold must be a scalar');
-   elseif (x < 0)
-       error('threshold must be a positive number');
-   else
-       check = true;
-   end
-end
-
 function lag = findFirstBelowThreshold(ami, threshold)
     % First find the first element below the threshold. Then test whether
     % an element below the threshold was found, and recover if this is not
     % the case.
     idx = find(ami < threshold, 1, 'first');
     if isempty(idx)
-        disp('No value below threshold found. Will use minimum instead');
+        disp('No value below threshold found. Will use local minimum instead');
+        % If there is more than one elemtent that has the minimum value
+        % the min() function returns the first one.
+        lag = findFirstLocalMinimum(ami);
+    else
+        % A value of the index idx = 1 corresponds to lag = 0, so 1 is
+        % subtracted from the index to get the lag.
+        lag = idx - 1;  
+    end
+end
+
+function lag = findFirstLocalMinimum(ami)
+    % Find all local minima
+    idx = find(diff(ami) > 0);
+    if ~isempty(idx)
+        % Select the first local minimum
+        idx = idx(1);
+    else
+        disp('No local minimium found. Will use minimum instead');
         % If there is more than one elemtent that has the minimum value
         % the min() function returns the first one.
         [~, idx] = min(ami);
     end
-        % A value of the index idx = 1 corresponds to lag = 0, so 1 is
-        % subtracted from the index to get the lag.
-        lag = idx - 1;       
+    % A value of the index idx = 1 corresponds to lag = 0, so 1 is
+    % subtracted from the index to get the lag.
+    lag = idx - 1;
 end
 
-% TODO: Add function findFirstLocalMinimum(ami)
-
 function plotMeanMI(ami, threshold)
-    [nlag, ncol] = size(ami);
+    [nlag, ~] = size(ami);
     maxlag = nlag - 1;
     % Compute a vector with the mean of each row.
     y = mean(ami, 2);
