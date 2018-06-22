@@ -7,25 +7,35 @@ function delay = mdDelay(data, varargin)
 %   for which the auto mutual information for each of the variables
 %   (columns) is less than a threshold, such as 1/e.
 %
-%   This is the uniform multivariate embedding method.
+%   This function currently implements the uniform multivariate embedding
+%   method.
 %
-%   Other methods may be added in a later version.
-%
-%   1 Brief description 2 Full-syntax call 3 Input &
-%   output explanations
-%     3.1 Alternative 1: List of inputs and outputs
+%   Inpiuts:
 %   Required arguments:
 %     data - a matrix with multiple timeseries, one in each column.
 %
-%     3.2 Alternative 2: Expanded-syntax style
-%   4 Notes
-%   5 Examples
-%   6 Methods and properties
-%   7 See also statement
-%   8 Repeat of full-syntax call
-%   9 Showdemo
+%   Optional arguments:
+%     maxLag: The maximum time lag for which AMI is computed. Default = 10.
+%     numBins: The number of bins used to construct the histograms for
+%       computing AMI. Default = 10.
+%     threshold: The threshold value to select the delay when AMI drops
+%       below threshold. Default = exp(-1)
+%     plottype: Determines how the AMI is plotted. Possible values are
+%     'mean', 'all', 'both', 'none'. Default = 'mean'
 %
-%   Authors: Sebastian Wallot and Dan M{\o}nster
+%
+%   Version: 1.0, 22 June 2018
+%   Authors:
+%     Sebastian Wallot, Max Planck Insitute for empirical aesthetics
+%     Dan Moenster, Aarhus University
+%
+%   Reference:
+%     Wallot, S., \& M{\o}nster, D. (2018). Calculation of average mutual
+%     information (AMI) and false-nearest neighbors (FNN) for the
+%     estimation of embedding parameters of multidimensional time-series in
+%     Matlab. Front. Psychol. - Quantitative Psychology and Measurement
+%     (under review)
+
 
 %
 % Parse and validate the input
