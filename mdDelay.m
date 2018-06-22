@@ -10,7 +10,7 @@ function delay = mdDelay(data, varargin)
 %   This function currently implements the uniform multivariate embedding
 %   method.
 %
-%   Inpiuts:
+%   Inputs:
 %   Required arguments:
 %     data - a matrix with multiple timeseries, one in each column.
 %
@@ -23,6 +23,8 @@ function delay = mdDelay(data, varargin)
 %     plottype: Determines how the AMI is plotted. Possible values are
 %     'mean', 'all', 'both', 'none'. Default = 'mean'
 %
+%   Outputs:
+%     delay: The estimated optimal delay given the input and critera.
 %
 %   Version: 1.0, 22 June 2018
 %   Authors:
