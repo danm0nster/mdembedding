@@ -17,16 +17,16 @@ end
 
 function testUniVariate(testCase)
 x = [1, 2, 1, 2, 1, 2, 1, 2, 3, 1, 2, 3, 4, 1, 2, 3, 4, 5]';
-actTau = mdDelay(x, 'plottype', 'all');
-expTau = 6;
+actTau = mdDelay(x, 'plottype', 'none');
+expTau = 3;
 verifyEqual(testCase, actTau, expTau);
 end
 
 function testBiVariate(testCase)
 x = [1, 2, 1, 2, 1, 2, 1, 2, 3, 1, 2, 3, 4, 1, 2, 3, 4, 5]';
 y = [7, 6, 5, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1, 2, 3, 4, 5, 6]';
-actTau = mdDelay([x,y]);
-expTau = 6;
+actTau = mdDelay([x,y], 'plottype', 'none');
+expTau = 2.5;
 verifyEqual(testCase, actTau, expTau);
 end
 
@@ -38,7 +38,7 @@ x = zeros(nDataPoints, nVariables);
 for var=1:nVariables
     x(:,var) = sin((1:nDataPoints)/nDataPoints*intervalLength + var);
 end
-acttau = mdDelay(x);
-exptau = 3;
+acttau = mdDelay(x, 'plottype', 'none');
+exptau = 2.5;
 verifyEqual(testCase, acttau, exptau);
 end
