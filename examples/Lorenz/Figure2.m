@@ -22,8 +22,9 @@ print('Figure2a','-dpng')
 
 %
 % Estimate the embedding dimension
+%
 figure()
-[fnnPercent, embeddingDimension] = mdFnn(data, round(tau), 10, 1);
+[fnnPercent, embeddingDimension] = mdFnn(data, round(tau));
 print('Figure2b','-dpng')
 
 %

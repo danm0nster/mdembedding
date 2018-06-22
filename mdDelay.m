@@ -28,7 +28,7 @@ function delay = mdDelay(data, varargin)
 %
 %   Version: 1.0, 22 June 2018
 %   Authors:
-%     Sebastian Wallot, Max Planck Insitute for empirical aesthetics
+%     Sebastian Wallot, Max Planck Insitute for Empirical Aesthetics
 %     Dan Moenster, Aarhus University
 %
 %   Reference:
@@ -59,13 +59,13 @@ checkMaxLag = @(x) validateattributes(x, {'numeric'}, {'positive', 'numel', 1});
 
 % Optional parameter: threshold
 defaultThreshold = exp(-1);
-% checkThreshold = @(x) validateattributes(x, {'numeric'}, {'positive'});
+checkThreshold = @(x) validateattributes(x, {'numeric'}, {'positive'});
 
 addRequired(parser, 'data', @checkdata);
 addOptional(parser, 'plottype', defaultPlotType, checkPlotType);
 addOptional(parser, 'numBins', defaultNumBins, checkNumBins);
 addOptional(parser, 'maxLag', defaultMaxLag, checkMaxLag);
-addOptional(parser, 'threshold', defaultThreshold, @checkThreshold);
+addOptional(parser, 'threshold', defaultThreshold, checkThreshold);
 parse(parser, data, varargin{:});
 
 % Get the optional arguments if provided. Otherwise the specified defaults
