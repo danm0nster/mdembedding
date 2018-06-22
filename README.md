@@ -48,6 +48,45 @@ The optimal embedding dimension is estimated using the method of false nearest n
 
 Since the number of false nearest neighbors drops to zero already at 2 embeddings we see that it is enough to embed the data in the three dimensions already present in the data, which is not surprising because we have sampled all the variables in the dynamical system.
 
+## Testing the functions
+You can run a short test suite for the functions by typing the following command in the MATLAB command window.
+```MATLAB
+runtests('tests/mdDelayTest.m')
+```
+If the test is successful you should see something like the output below.
+```
+Running mdDelayTest
+No value below threshold found. Will use first local minimum instead
+.No value below threshold found. Will use first local minimum instead
+No value below threshold found. Will use first local minimum instead
+.No value below threshold found. Will use first local minimum instead
+No value below threshold found. Will use first local minimum instead
+No value below threshold found. Will use first local minimum instead
+No value below threshold found. Will use first local minimum instead
+No value below threshold found. Will use first local minimum instead
+.Teardown called. No action taken here.
+
+Done mdDelayTest
+__________
+
+
+ans =
+
+  1×3 TestResult array with properties:
+
+    Name
+    Passed
+    Failed
+    Incomplete
+    Duration
+    Details
+
+Totals:
+   3 Passed, 0 Failed, 0 Incomplete.
+   0.097622 seconds testing time.
+
+```
+
 ## How to cite
 If you find these functions useful and publish results where you have used them, please cite our paper:
 

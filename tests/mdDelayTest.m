@@ -38,7 +38,7 @@ x = zeros(nDataPoints, nVariables);
 for var=1:nVariables
     x(:,var) = sin((1:nDataPoints)/nDataPoints*intervalLength + var);
 end
-acttau = mdDelay(x, 'plottype', 'none');
-exptau = 2.5;
-verifyEqual(testCase, acttau, exptau);
+actTau = mdDelay(x, 'plottype', 'none');
+expTau = 2.8;
+verifyEqual(testCase, actTau, expTau);
 end
