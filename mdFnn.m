@@ -156,6 +156,7 @@ for i = 1:maxEmb % embed data
 end
 embTimes = 1:1:maxEmb;
 if (doPlot)  % plot results
+    figure()
     plot(fnnPerc,'--o')
     title('False nearest neighbour function')
     xlabel('Number of embeddings')
