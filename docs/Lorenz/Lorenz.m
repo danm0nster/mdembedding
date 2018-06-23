@@ -5,8 +5,12 @@
 % produce Figure 1 and Figure 2 in the article, but also contains some
 % additional examples of calling the functions and plotting the results.
 %
-% 
-
+% For further detals, we refer to the article:
+%
+% Wallot, S., & Mønster, D. (2018). Calculation of average mutual
+% information (AMI) and false-nearest neighbors (FNN) for the estimation of
+% embedding parameters of multidimensional time-series in Matlab. Front.
+% Psychol. - Quantitative Psychology and Measurement (under review)
 
 %% Load the data and set font size for plots
 
