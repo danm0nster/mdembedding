@@ -24,27 +24,27 @@ The data can be visualized by plotting the three variables x, y and z.
 plot3(data(:,1), data(:,2), data(:,3), 'k')
 ```
 
-![Figure 1a from paper](examples/Lorenz/Figure1a.png)
+![Figure 1a from paper](docs/Lorenz/Figure1a.png)
 
 ### Estimating the time delay
 To estimate the proper time delay for embedding the data we use the function `mdDelay`.
 ```MATLAB
 tau = mdDelay(data, 'maxLag', 25, 'plottype', 'all');
 ```
-![Figure 2a from paper](examples/Lorenz/Figure2a.png)
+![Figure 2a from paper](docs/Lorenz/Figure2a.png)
 
 This gives a value of `tau` that rounds to 15. A visual inspection of the plot of mutual information indicates that this is a reasonable value, since all three curves have minima close to that value. Alternatively we can get `mdDelay()` to plot the mean mutual information, by setting the plot type to "mean".
 ```MATLAB
 tau = mdDelay(data, 'maxLag', 25, 'plottype', 'mean');
 ```
-![Plot of mean AMI](examples/Lorenz/Figure2a_mean.png)
+![Plot of mean AMI](docs/Lorenz/Figure2a_mean.png)
 
 ### Estimating the embedding dimension
 The optimal embedding dimension is estimated using the method of false nearest neighbors (FNN), which is implemented in the function `mdFnn()`. We call this function with the value of `tau` found above rounded to nearest integer (in this case 15). The function returns a vector with the percent of FNN and another vector with the corresponding embedding dimensions.
 ```MATLAB
 [fnnPercent, embeddingDimension] = mdFnn(data, round(tau));
 ```
-![Figure 2b from paper](examples/Lorenz/Figure2b.png)
+![Figure 2b from paper](docs/Lorenz/Figure2b.png)
 
 Since the number of false nearest neighbors drops to zero already at 2 embeddings we see that it is enough to embed the data in the three dimensions already present in the data, which is not surprising because we have sampled all the variables in the dynamical system.
 
