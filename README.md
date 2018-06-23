@@ -9,7 +9,7 @@ git clone https://github.com/danm0nster/mdembedding.git mdembedding
 ```
 If you want your cloned copy in a different directory you can change the last parameter to something else, e.g. `mde-copy`.
 
-To embed time series data using the time-delayed embedding method two paramters are needed: the time delay and the embeddding dimension. We provide two functions to estimate these parameters: `mdDelay()` and `mdFnn()`.
+To embed time series data using the time-delayed embedding method two parameters are needed: the time delay and the embeddding dimension. We provide two functions to estimate these parameters: `mdDelay()` and `mdFnn()`.
 
 ## Example
 This is a short example of how to use the functions using the well-known Lorenz attractor. The data have been pre-generated and the MATLAB code for generating the plots can be found in this repository under docs/Lorenz, and you can also view the full [output of the MATLAB notebook](https://danm0nster.github.io/mdembedding/Lorenz/html/). Here, we will just show the basic commands used to produce plots and other outputs.
