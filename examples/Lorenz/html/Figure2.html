@@ -1,0 +1,198 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Using mdDelay() and mdFnn() to estimate embedding of the Lorenz attractor</title><meta name="generator" content="MATLAB 9.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-06-22"><meta name="DC.source" content="Figure2.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Using <tt>mdDelay()</tt> and <tt>mdFnn()</tt> to estimate embedding of the Lorenz attractor</h1><!--introduction--><p>This file contains examples of how to use the functions mdDelay and mdFnn on example data from the Lorenz equations. This script was used to produce Figure 2 in the article.</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Load the data and set font size for plots</a></li><li><a href="#2">Estimate time delay and plot AMI using all variables (Figure 2a in article)</a></li><li><a href="#3">Estimate the embedding dimension (Figure 2b in the article)</a></li><li><a href="#4">Alternative method to find time delay using first local minimum criterion</a></li><li><a href="#5">Plot the average AMI and standard deviation</a></li><li><a href="#6">Time delay and plot only the x-variable</a></li><li><a href="#7">Time delay and plot only the y-variable</a></li><li><a href="#8">Time delay and plot only the z-variable</a></li><li><a href="#9">Time delay and plot x and y variables</a></li><li><a href="#10">Time delay and plot x and z variables</a></li><li><a href="#11">Time delay and plot y and z variables</a></li></ul></div><h2 id="1">Load the data and set font size for plots</h2><pre class="codeinput">data = load(<span class="string">'lorenz_3d_timeseries.txt'</span>);
+fontSize = 18;
+</pre><h2 id="2">Estimate time delay and plot AMI using all variables (Figure 2a in article)</h2><pre class="codeinput">tau = mdDelay(data, <span class="string">'maxLag'</span>, 25, <span class="string">'plottype'</span>, <span class="string">'all'</span>);
+set(gca,<span class="string">'FontSize'</span>,fontSize,<span class="string">'fontWeight'</span>,<span class="string">'normal'</span>)
+disp(<span class="string">'xyz: tau = '</span> + string(tau))
+print(<span class="string">'Figure2a'</span>,<span class="string">'-dpng'</span>)
+</pre><pre class="codeoutput">No value below threshold found. Will use first local minimum instead
+No value below threshold found. Will use first local minimum instead
+xyz: tau = 15.3333
+</pre><img vspace="5" hspace="5" src="Figure2_01.png" alt=""> <h2 id="3">Estimate the embedding dimension (Figure 2b in the article)</h2><pre class="codeinput">figure()
+[fnnPercent, embeddingDimension] = mdFnn(data, round(tau));
+set(gca,<span class="string">'FontSize'</span>,fontSize,<span class="string">'fontWeight'</span>,<span class="string">'normal'</span>)
+print(<span class="string">'Figure2b'</span>,<span class="string">'-dpng'</span>)
+</pre><img vspace="5" hspace="5" src="Figure2_02.png" alt=""> <h2 id="4">Alternative method to find time delay using first local minimum criterion</h2><pre class="codeinput">tau = mdDelay(data, <span class="string">'maxLag'</span>, 25, <span class="string">'plottype'</span>, <span class="string">'all'</span>, <span class="string">'criterion'</span>, <span class="string">'localMin'</span>);
+set(gca,<span class="string">'FontSize'</span>,fontSize,<span class="string">'fontWeight'</span>,<span class="string">'normal'</span>)
+disp(<span class="string">'xyz: tau = '</span> + string(tau))
+</pre><pre class="codeoutput">xyz: tau = 16.6667
+</pre><img vspace="5" hspace="5" src="Figure2_03.png" alt=""> <h2 id="5">Plot the average AMI and standard deviation</h2><pre class="codeinput">tau = mdDelay(data, <span class="string">'maxLag'</span>, 25, <span class="string">'plottype'</span>, <span class="string">'mean'</span>);
+set(gca,<span class="string">'FontSize'</span>,fontSize,<span class="string">'fontWeight'</span>,<span class="string">'normal'</span>)
+disp(<span class="string">'xyz: tau = '</span> + string(tau))
+</pre><pre class="codeoutput">No value below threshold found. Will use first local minimum instead
+No value below threshold found. Will use first local minimum instead
+xyz: tau = 15.3333
+</pre><img vspace="5" hspace="5" src="Figure2_04.png" alt=""> <h2 id="6">Time delay and plot only the x-variable</h2><pre class="codeinput">tau = mdDelay(data(:,1), <span class="string">'maxLag'</span>, 25, <span class="string">'plottype'</span>, <span class="string">'all'</span>);
+set(gca,<span class="string">'FontSize'</span>,fontSize,<span class="string">'fontWeight'</span>,<span class="string">'normal'</span>)
+disp(<span class="string">'x: tau = '</span> + string(tau))
+</pre><pre class="codeoutput">No value below threshold found. Will use first local minimum instead
+x: tau = 19
+</pre><img vspace="5" hspace="5" src="Figure2_05.png" alt=""> <h2 id="7">Time delay and plot only the y-variable</h2><pre class="codeinput">tau = mdDelay(data(:,2), <span class="string">'maxLag'</span>, 25, <span class="string">'plottype'</span>, <span class="string">'all'</span>);
+set(gca,<span class="string">'FontSize'</span>,fontSize,<span class="string">'fontWeight'</span>,<span class="string">'normal'</span>)
+disp(<span class="string">'y: tau = '</span> + string(tau))
+</pre><pre class="codeoutput">No value below threshold found. Will use first local minimum instead
+y: tau = 15
+</pre><img vspace="5" hspace="5" src="Figure2_06.png" alt=""> <h2 id="8">Time delay and plot only the z-variable</h2><pre class="codeinput">tau = mdDelay(data(:,3), <span class="string">'maxLag'</span>, 25, <span class="string">'plottype'</span>, <span class="string">'all'</span>);
+set(gca,<span class="string">'FontSize'</span>,fontSize,<span class="string">'fontWeight'</span>,<span class="string">'normal'</span>)
+disp(<span class="string">'z: tau = '</span> + string(tau))
+</pre><pre class="codeoutput">z: tau = 12
+</pre><img vspace="5" hspace="5" src="Figure2_07.png" alt=""> <h2 id="9">Time delay and plot x and y variables</h2><pre class="codeinput">tau = mdDelay(data(:,1:2), <span class="string">'maxLag'</span>, 25, <span class="string">'plottype'</span>, <span class="string">'all'</span>);
+set(gca,<span class="string">'FontSize'</span>,fontSize,<span class="string">'fontWeight'</span>,<span class="string">'normal'</span>)
+disp(<span class="string">'xy: tau = '</span> + string(tau))
+</pre><pre class="codeoutput">No value below threshold found. Will use first local minimum instead
+No value below threshold found. Will use first local minimum instead
+xy: tau = 17
+</pre><img vspace="5" hspace="5" src="Figure2_08.png" alt=""> <h2 id="10">Time delay and plot x and z variables</h2><pre class="codeinput">tau = mdDelay(data(:,[1,3]), <span class="string">'maxLag'</span>, 25, <span class="string">'plottype'</span>, <span class="string">'all'</span>);
+set(gca,<span class="string">'FontSize'</span>,fontSize,<span class="string">'fontWeight'</span>,<span class="string">'normal'</span>)
+disp(<span class="string">'xz: tau = '</span> + string(tau))
+</pre><pre class="codeoutput">No value below threshold found. Will use first local minimum instead
+xz: tau = 15.5
+</pre><img vspace="5" hspace="5" src="Figure2_09.png" alt=""> <h2 id="11">Time delay and plot y and z variables</h2><pre class="codeinput">tau = mdDelay(data(:,2:3), <span class="string">'maxLag'</span>, 25, <span class="string">'plottype'</span>, <span class="string">'all'</span>);
+set(gca,<span class="string">'FontSize'</span>,fontSize,<span class="string">'fontWeight'</span>,<span class="string">'normal'</span>)
+disp(<span class="string">'yz: tau = '</span> + string(tau))
+</pre><pre class="codeoutput">No value below threshold found. Will use first local minimum instead
+yz: tau = 13.5
+</pre><img vspace="5" hspace="5" src="Figure2_10.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Using |mdDelay()| and |mdFnn()| to estimate embedding of the Lorenz attractor
+% 
+% This file contains examples of how to use the functions mdDelay and mdFnn
+% on example data from the Lorenz equations. This script was used to
+% produce Figure 2 in the article.
+%
+% 
+
+
+%% Load the data and set font size for plots
+
+data = load('lorenz_3d_timeseries.txt');
+fontSize = 18;
+
+
+%% Estimate time delay and plot AMI using all variables (Figure 2a in article)
+tau = mdDelay(data, 'maxLag', 25, 'plottype', 'all');
+set(gca,'FontSize',fontSize,'fontWeight','normal')
+disp('xyz: tau = ' + string(tau))
+print('Figure2a','-dpng')
+
+
+%% Estimate the embedding dimension (Figure 2b in the article)
+figure()
+[fnnPercent, embeddingDimension] = mdFnn(data, round(tau));
+set(gca,'FontSize',fontSize,'fontWeight','normal')
+print('Figure2b','-dpng')
+
+
+%% Alternative method to find time delay using first local minimum criterion
+tau = mdDelay(data, 'maxLag', 25, 'plottype', 'all', 'criterion', 'localMin');
+set(gca,'FontSize',fontSize,'fontWeight','normal')
+disp('xyz: tau = ' + string(tau))
+
+%% Plot the average AMI and standard deviation
+tau = mdDelay(data, 'maxLag', 25, 'plottype', 'mean');
+set(gca,'FontSize',fontSize,'fontWeight','normal')
+disp('xyz: tau = ' + string(tau))
+
+
+%% Time delay and plot only the x-variable
+tau = mdDelay(data(:,1), 'maxLag', 25, 'plottype', 'all');
+set(gca,'FontSize',fontSize,'fontWeight','normal')
+disp('x: tau = ' + string(tau))
+
+%% Time delay and plot only the y-variable
+tau = mdDelay(data(:,2), 'maxLag', 25, 'plottype', 'all');
+set(gca,'FontSize',fontSize,'fontWeight','normal')
+disp('y: tau = ' + string(tau))
+
+
+%% Time delay and plot only the z-variable
+tau = mdDelay(data(:,3), 'maxLag', 25, 'plottype', 'all');
+set(gca,'FontSize',fontSize,'fontWeight','normal')
+disp('z: tau = ' + string(tau))
+
+
+%% Time delay and plot x and y variables
+tau = mdDelay(data(:,1:2), 'maxLag', 25, 'plottype', 'all');
+set(gca,'FontSize',fontSize,'fontWeight','normal')
+disp('xy: tau = ' + string(tau))
+
+
+%% Time delay and plot x and z variables
+tau = mdDelay(data(:,[1,3]), 'maxLag', 25, 'plottype', 'all');
+set(gca,'FontSize',fontSize,'fontWeight','normal')
+disp('xz: tau = ' + string(tau))
+
+
+%% Time delay and plot y and z variables
+tau = mdDelay(data(:,2:3), 'maxLag', 25, 'plottype', 'all');
+set(gca,'FontSize',fontSize,'fontWeight','normal')
+disp('yz: tau = ' + string(tau))
+##### SOURCE END #####
+--></body></html>
