@@ -1,6 +1,6 @@
 # Estimation of embedding parameters for multivariate data
 This repository contains MATLAB code for estimating parameters for phase space reconstruction of multivariate data. The functions provided in this repository are described in the article:
-> Wallot & Mønster (2018) Calculation of average mutual information (AMI) and false-nearest neighbors (FNN) for the estimation of embedding parameters of multidimensional time-series in MATLAB (Under review, *Frontiers in Psychology*)
+> Wallot & Mønster (2018) Calculation of average mutual information (AMI) and false-nearest neighbors (FNN) for the estimation of embedding parameters of multidimensional time-series in MATLAB *Frontiers in Psychology, 9: 1679* [DOI:10.3389/fpsyg.2018.01679](https://dx.doi.org/10.3389%2Ffpsyg.2018.01679)
 
 ## Installation
 The functions in this repository can be used if you place the files containing them in a directory that is in your MATLAB Path. You can simply download [mdDelay.m](mdDelay.m), [autoMI.m](autoMI.m) and [mdFnn.m](mdFnn.m) or you can clone the whole repository to get all the files and examples:
@@ -90,4 +90,4 @@ Totals:
 ## How to cite
 If you find these functions useful and publish results where you have used them, please cite our paper:
 
-Wallot & Mønster (2018) Calculation of average mutual information (AMI) and false-nearest neighbors (FNN) for the estimation of embedding parameters of multidimensional time-series in MATLAB (Under review, *Frontiers in Psychology*)
+Wallot & Mønster (2018) Calculation of average mutual information (AMI) and false-nearest neighbors (FNN) for the estimation of embedding parameters of multidimensional time-series in MATLAB *Frontiers in Psychology, 9: 1679* [DOI:10.3389/fpsyg.2018.01679](https://dx.doi.org/10.3389%2Ffpsyg.2018.01679)
