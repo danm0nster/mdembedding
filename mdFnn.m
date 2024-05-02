@@ -38,7 +38,9 @@ function [fnnPerc, embTimes] = mdFnn(data, tau, varargin)
 %     once. Hence, the resulting falase neibor percentages result from
 %     embeddeding data (embTimes - 1) times
 %
-%   Version: 1.0, 22 June 2018
+%   Version: 1.01, 20 May 2024
+%   02 May 2024 (1.01): Fixed problem with first false-nearest neighbor estimate
+%
 %   Authors:
 %     Sebastian Wallot, Max Planck Insitute for Empirical Aesthetics
 %     Dan Moenster, Aarhus University
@@ -114,7 +116,7 @@ end
 % Now do the actual work to find FNN
 %
 dims = size(data,2); % get dimensionality of time series
-fnnPerc = 100; % first FNN
+fnnPerc = zeros(maxEmb-1,1); % first FNN
 Ra = sum(var(data)); % estimate of attractor size
 if (length(data)-tau*(maxEmb-1)) < numSamples % check whether enough data points exist for random sampling
     numSamples = length(data)-tau*(maxEmb-1);
@@ -149,7 +151,7 @@ for i = 1:maxEmb % embed data
                 fnnTemp(j) = 0;
             end
         end
-        fnnPerc(i) = 100*sum(fnnTemp)/length(fnnTemp); % compute percentage of FNN
+        fnnPerc(i-1) = 100*sum(fnnTemp)/length(fnnTemp); % compute percentage of FNN
         r2d = r2d1;
         yRd = r2d1;
     end
